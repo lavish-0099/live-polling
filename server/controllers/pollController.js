@@ -62,9 +62,16 @@ const votePoll = async (req, res) => {
 
     poll.options[optionIndex].votes += 1;
 
-    await poll.save();
+   await poll.save();
 
-    res.json(poll);
+const io = req.app.get("io");
+
+io.to(req.params.id).emit(
+  "pollUpdated",
+  poll
+);
+
+res.json(poll);
   } catch (error) {
     res.status(500).json({
       message: error.message,
