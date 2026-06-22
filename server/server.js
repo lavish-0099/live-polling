@@ -3,7 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const Poll = require("./models/Poll");
-
+const Vote = require("./models/Vote");
 const app = express();
 
 app.use(express.json());
@@ -23,6 +23,21 @@ app.get("/test", async (req, res) => {
   });
 
   res.json(poll);
+});
+
+app.get("/vote-test", async (req, res) => {
+  try {
+    const vote = await Vote.create({
+      pollId: "686000000000000000000000",
+      voterId: "user123",
+    });
+
+    res.json(vote);
+  } catch (err) {
+    res.status(500).json({
+      error: err.message,
+    });
+  }
 });
 console.log("URI:", process.env.MONGO_URI);
 
