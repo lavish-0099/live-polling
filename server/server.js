@@ -1,5 +1,5 @@
 require("dotenv").config();
-
+const cors = require("cors");
 const express = require("express");
 const mongoose = require("mongoose");
 
@@ -8,7 +8,13 @@ const http = require("http");
 const { Server } = require("socket.io");
 const registerPollSocket = require("./socket/pollSocket");
 const app = express();
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+  })
+);
 
+app.use(express.json());
 app.use(express.json());
 
 app.use("/api/polls", pollRoutes);
