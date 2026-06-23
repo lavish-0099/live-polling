@@ -10,11 +10,7 @@ const registerPollSocket = require("./socket/pollSocket");
 const aiRoutes =
   require("./routes/aiRoutes");
 const app = express();
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-  })
-);
+app.use(cors());
 
 app.use(express.json());
 app.use(express.json());
@@ -44,11 +40,13 @@ const io = new Server(server, {
     origin: "*",
   },
 });
-
 registerPollSocket(io);
 
 app.set("io", io);
+const PORT = process.env.PORT || 5000;
 
-server.listen(5000, () => {
-  console.log("Server running on port 5000");
+server.listen(PORT, () => {
+  console.log(
+    `Server running on port ${PORT}`
+  );
 });
