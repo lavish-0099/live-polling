@@ -516,3 +516,18 @@ transition:
 
 
 }
+
+.ai-card{
+  width:100%;
+  margin:20px 0;
+}
+
+.ai-card h3 {
+  margin-top: 0;
+  color: #8cff4c;
+}
+
+.ai-card p {
+  color: #9ca3af;
+  margin-bottom: 15px;
+}

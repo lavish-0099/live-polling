@@ -9,6 +9,7 @@ function CreatePoll() {
 
   const [question, setQuestion] = useState("");
   const [options, setOptions] = useState(["", ""]);
+  const [topic, setTopic] = useState("");
 
   const addOption = () => {
     if (options.length < 6) {
@@ -30,41 +31,54 @@ function CreatePoll() {
     setOptions(updated);
   };
 
+  const generateSuggestions = async () => {
+    try {
+      const res = await api.post(
+        "/ai/generate-options",
+        {
+          topic,
+        }
+      );
+
+      setOptions(res.data.options);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const createPoll = async (e) => {
     e.preventDefault();
 
-    const res = await api.post(
-      "/polls",
-      {
-        question,
-        options,
-      }
-    );
+    try {
+      const res = await api.post(
+        "/polls",
+        {
+          question,
+          options,
+        }
+      );
 
-    navigate(
-      `/poll/${res.data._id}`
-    );
+      navigate(
+        `/poll/${res.data._id}`
+      );
+    } catch (error) {
+      console.log(error);
+    }
   };
-
 
   return (
     <div className="page">
-
       <div className="poll-card">
 
         <h1>
-          Create a 
-          <span> Poll</span>
+          Create a <span>Poll</span>
         </h1>
 
         <p className="subtitle">
           Ask anything. Get realtime answers.
         </p>
 
-
         <form onSubmit={createPoll}>
-
 
           <label>Question</label>
 
@@ -72,33 +86,54 @@ function CreatePoll() {
             className="input"
             placeholder="What do you want to ask?"
             value={question}
-            onChange={(e)=>
+            onChange={(e) =>
               setQuestion(e.target.value)
             }
           />
 
+          <div className="ai-card">
+
+            <h3>
+              ⚡ Smart Suggestions
+            </h3>
+
+            <p>
+              Enter a topic and generate poll options
+            </p>
+
+            <input
+              className="input"
+              placeholder="Best Programming Languages"
+              value={topic}
+              onChange={(e) =>
+                setTopic(e.target.value)
+              }
+            />
+
+            <button
+              type="button"
+              className="outline-btn"
+              onClick={generateSuggestions}
+            >
+              Generate Suggestions
+            </button>
+
+          </div>
 
           <label>Options</label>
 
+          {options.map((option, index) => (
 
-          {options.map((option,index)=>(
-
-            <div 
+            <div
               className="option-row"
               key={index}
             >
 
               <input
-
                 className="input"
-
-                placeholder={
-                  `Option ${index+1}`
-                }
-
+                placeholder={`Option ${index + 1}`}
                 value={option}
-
-                onChange={(e)=>
+                onChange={(e) =>
                   updateOption(
                     index,
                     e.target.value
@@ -106,56 +141,42 @@ function CreatePoll() {
                 }
               />
 
-
               <button
                 type="button"
                 className="icon-btn"
-                onClick={()=>
+                onClick={() =>
                   removeOption(index)
                 }
               >
-
-                <FiTrash/>
-
+                <FiTrash />
               </button>
-
 
             </div>
 
           ))}
-
-
 
           <button
             type="button"
             className="outline-btn"
             onClick={addOption}
           >
-
-            <FiPlus/>
+            <FiPlus />
             Add Option
-
           </button>
-
 
           <button
             className="primary-btn"
+            type="submit"
           >
-
-            <FiZap/>
+            <FiZap />
             Create Poll
-
           </button>
-
 
         </form>
 
-
       </div>
-
     </div>
   );
 }
-
 
 export default CreatePoll;

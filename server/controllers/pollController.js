@@ -3,6 +3,8 @@ const Vote = require("../models/Vote");
 
 const createPoll = async (req, res) => {
   try {
+    console.log("BODY:", req.body);
+
     const { question, options } = req.body;
 
     const poll = await Poll.create({
@@ -13,13 +15,17 @@ const createPoll = async (req, res) => {
     });
 
     res.status(201).json(poll);
+
   } catch (error) {
+    console.error("CREATE POLL ERROR:");
+    console.error(error);
+
     res.status(500).json({
       message: error.message,
     });
   }
 };
-
+ 
 const getPollById = async (req, res) => {
   try {
     const poll = await Poll.findById(req.params.id);

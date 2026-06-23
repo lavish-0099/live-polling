@@ -7,6 +7,8 @@ const pollRoutes = require("./routes/pollRoutes");
 const http = require("http");
 const { Server } = require("socket.io");
 const registerPollSocket = require("./socket/pollSocket");
+const aiRoutes =
+  require("./routes/aiRoutes");
 const app = express();
 app.use(
   cors({
@@ -19,12 +21,15 @@ app.use(express.json());
 
 app.use("/api/polls", pollRoutes);
 
+app.use("/api/ai", aiRoutes);
+
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
-    console.log("MongoDB Connected");
+    console.log("✅ MongoDB Connected");
   })
   .catch((err) => {
+    console.log("❌ Mongo Error");
     console.log(err);
   });
 
