@@ -72,6 +72,11 @@ const votePoll = async (req, res) => {
 
 const io = req.app.get("io");
 
+console.log(
+  "EMITTING UPDATE TO:",
+  req.params.id
+);
+
 io.to(req.params.id).emit(
   "pollUpdated",
   poll
@@ -90,12 +95,12 @@ module.exports = {
   getPollById,
   votePoll,
 };
-console.log(
-  "EMITTING UPDATE TO:",
-  req.params.id
-);
+// console.log(
+//   "EMITTING UPDATE TO:",
+//   req.params.id
+// );
 
-io.to(req.params.id).emit(
-  "pollUpdated",
-  poll
-);
+// io.to(req.params.id).emit(
+//   "pollUpdated",
+//   poll
+// );
