@@ -34,15 +34,13 @@ function PollPage() {
     };
   }, [id]);
 
-  const loadPoll = async () => {
-    try {
-      const res = await api.get(`/polls/${id}`);
-      setPoll(res.data);
-    } catch (error) {
-      console.log(error);
-      toast.error("Failed to load poll");
-    }
-  };
+ const loadPoll = async () => {
+  const res = await api.get(`/polls/${id}`);
+
+  setPoll(res.data);
+
+  toast.success("Toast Test");
+};
 
   const vote = async (index) => {
     let voterId = localStorage.getItem("voterId");
