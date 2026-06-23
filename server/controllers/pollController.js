@@ -90,3 +90,12 @@ module.exports = {
   getPollById,
   votePoll,
 };
+console.log(
+  "EMITTING UPDATE TO:",
+  req.params.id
+);
+
+io.to(req.params.id).emit(
+  "pollUpdated",
+  poll
+);

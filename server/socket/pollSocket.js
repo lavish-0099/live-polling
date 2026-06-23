@@ -18,5 +18,11 @@ const registerPollSocket = (io) => {
     });
   });
 };
+socket.on("joinPoll", (pollId) => {
+  console.log(
+    `${socket.id} joined poll ${pollId}`
+  );
 
+  socket.join(pollId);
+});
 module.exports = registerPollSocket;
