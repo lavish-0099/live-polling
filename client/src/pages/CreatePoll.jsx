@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FiPlus, FiZap, FiTrash } from "react-icons/fi";
 
 import api from "../services/api";
-
+import { motion } from "framer-motion";
 function CreatePoll() {
   const navigate = useNavigate();
 
@@ -68,7 +68,20 @@ function CreatePoll() {
 
   return (
     <div className="page">
-      <div className="poll-card">
+      <motion.div
+  className="poll-card"
+  initial={{
+    opacity: 0,
+    y: 30,
+  }}
+  animate={{
+    opacity: 1,
+    y: 0,
+  }}
+  transition={{
+    duration: 0.5,
+  }}
+>
 
         <h1>
           Create a <span>Poll</span>
@@ -174,7 +187,7 @@ function CreatePoll() {
 
         </form>
 
-      </div>
+      </motion.div>
     </div>
   );
 }

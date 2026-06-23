@@ -4,7 +4,14 @@ import { FiCopy, FiZap } from "react-icons/fi";
 
 import api from "../services/api";
 import { socket } from "../services/socket";
-
+import toast from "react-hot-toast";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  ResponsiveContainer
+} from "recharts";
 
 function PollPage() {
 
@@ -30,6 +37,11 @@ function PollPage() {
         setPoll(data);
       }
     );
+    const chartData =
+  poll.options.map(option => ({
+    name: option.text,
+    value: option.votes,
+  }));
 
 
     return ()=>{
@@ -100,9 +112,9 @@ function PollPage() {
     }
     catch(err){
 
-      alert(
-        err.response?.data?.message
-      );
+   toast.error(
+  err.response?.data?.message
+);
 
     }
 
@@ -138,7 +150,20 @@ function PollPage() {
     <div className="page">
 
 
-      <div className="poll-card">
+<motion.div
+  className="poll-card"
+  initial={{
+    opacity: 0,
+    y: 30,
+  }}
+  animate={{
+    opacity: 1,
+    y: 0,
+  }}
+  transition={{
+    duration: 0.5,
+  }}
+>
 
 
         <div className="live">
@@ -169,10 +194,7 @@ function PollPage() {
             );
 
 
-            alert(
-              "Copied!"
-            );
-
+toast.success("Link copied!");
           }}
 
         >
@@ -256,18 +278,18 @@ function PollPage() {
                 <div className="bar">
 
 
-                  <div
-
-                    className="bar-fill"
-
-                    style={{
-
-                      width:
-                      `${percentage}%`
-
-                    }}
-
-                  />
+  <motion.div
+  className="bar-fill"
+  initial={{
+    width: 0
+  }}
+  animate={{
+    width: `${percentage}%`
+  }}
+  transition={{
+    duration: 0.6
+  }}
+/>
 
 
                 </div>
@@ -308,9 +330,36 @@ function PollPage() {
 
         </h2>
 
+<div
+  style={{
+    width: "100%",
+    height: 300,
+    marginTop: 20,
+  }}
+>
+  <ResponsiveContainer>
+    <PieChart>
+      <Pie
+        data={chartData}
+        dataKey="value"
+        nameKey="name"
+        outerRadius={100}
+      >
+        {chartData.map(
+          (_, index) => (
+            <Cell
+              key={index}
+            />
+          )
+        )}
+      </Pie>
 
+      <Tooltip />
+    </PieChart>
+  </ResponsiveContainer>
+</div>
 
-      </div>
+      </motion.div>
 
 
 

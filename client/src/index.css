@@ -531,3 +531,17 @@ transition:
   color: #9ca3af;
   margin-bottom: 15px;
 }
+.primary-btn,
+.vote-btn,
+.outline-btn {
+  transition: all 0.3s ease;
+}
+
+.primary-btn:hover,
+.vote-btn:hover {
+  transform: translateY(-2px);
+}
+
+.outline-btn:hover {
+  transform: translateY(-2px);
+}
