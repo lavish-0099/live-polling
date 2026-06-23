@@ -1,163 +1,327 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { FiCopy, FiZap } from "react-icons/fi";
 
 import api from "../services/api";
 import { socket } from "../services/socket";
 
+
 function PollPage() {
+
   const { id } = useParams();
 
-  const [poll, setPoll] = useState(null);
+  const [poll,setPoll] = useState(null);
 
-  useEffect(() => {
-    fetchPoll();
 
-    socket.emit("joinPoll", id);
+  useEffect(()=>{
 
-    socket.on("pollUpdated", (updatedPoll) => {
-      setPoll(updatedPoll);
-    });
+    loadPoll();
 
-    return () => {
-      socket.off("pollUpdated");
+
+    socket.emit(
+      "joinPoll",
+      id
+    );
+
+
+    socket.on(
+      "pollUpdated",
+      (data)=>{
+        setPoll(data);
+      }
+    );
+
+
+    return ()=>{
+
+      socket.off(
+        "pollUpdated"
+      );
+
     };
-  }, []);
 
-  const fetchPoll = async () => {
-    try {
-      const response = await api.get(`/polls/${id}`);
 
-      setPoll(response.data);
-    } catch (error) {
-      console.error(error);
-    }
+  },[]);
+
+
+
+  const loadPoll = async()=>{
+
+    const res =
+      await api.get(
+        `/polls/${id}`
+      );
+
+
+    setPoll(
+      res.data
+    );
+
   };
 
-  const vote = async (optionIndex) => {
-    let voterId =
-      localStorage.getItem("voterId");
 
-    if (!voterId) {
-      voterId = crypto.randomUUID();
+
+  const vote = async(index)=>{
+
+
+    let voterId =
+      localStorage.getItem(
+        "voterId"
+      );
+
+
+    if(!voterId){
+
+      voterId =
+        crypto.randomUUID();
+
 
       localStorage.setItem(
         "voterId",
         voterId
       );
+
     }
 
-    try {
+
+
+    try{
+
+
       await api.post(
         `/polls/${id}/vote`,
         {
-          optionIndex,
-          voterId,
+          optionIndex:index,
+          voterId
         }
       );
-    } catch (error) {
-      alert(
-        error?.response?.data?.message ||
-          "Vote failed"
-      );
+
+
     }
+    catch(err){
+
+      alert(
+        err.response?.data?.message
+      );
+
+    }
+
+
   };
 
-  if (!poll) {
-    return <h2>Loading...</h2>;
+
+
+  if(!poll){
+
+    return(
+      <div className="page">
+        Loading...
+      </div>
+    );
+
   }
 
-  const totalVotes = poll.options.reduce(
-    (sum, option) => sum + option.votes,
-    0
-  );
 
-  return (
-    <div
-      style={{
-        maxWidth: "700px",
-        margin: "40px auto",
-      }}
-    >
-      <h1>{poll.question}</h1>
 
-      <button
-        onClick={() => {
-          navigator.clipboard.writeText(
-            window.location.href
-          );
+  const totalVotes =
+    poll.options.reduce(
+      (a,b)=>
+        a+b.votes,
+      0
+    );
 
-          alert("Link copied");
-        }}
-      >
-        Copy Poll Link
-      </button>
 
-      <br />
-      <br />
 
-      {poll.options.map(
-        (option, index) => {
-          const percentage =
-            totalVotes === 0
-              ? 0
-              : (
-                  (option.votes /
-                    totalVotes) *
-                  100
-                ).toFixed(1);
 
-          return (
-            <div
-              key={index}
-              style={{
-                marginBottom: "20px",
-              }}
-            >
-              <button
-                onClick={() =>
-                  vote(index)
-                }
-              >
-                Vote
-              </button>
+  return(
 
-              <strong>
-                {" "}
-                {option.text}
-              </strong>
+    <div className="page">
 
-              <p>
-                {option.votes} votes (
-                {percentage}%)
-              </p>
+
+      <div className="poll-card">
+
+
+        <div className="live">
+
+          <FiZap/>
+
+          Live Poll
+
+        </div>
+
+
+        <h1>
+          {poll.question}
+        </h1>
+
+
+
+        <button
+
+          className="outline-btn"
+
+          onClick={()=>{
+
+            navigator
+            .clipboard
+            .writeText(
+              window.location.href
+            );
+
+
+            alert(
+              "Copied!"
+            );
+
+          }}
+
+        >
+
+          <FiCopy/>
+
+          Copy Link
+
+
+        </button>
+
+
+
+        {
+
+
+        poll.options.map(
+          (option,index)=>{
+
+
+            const percentage =
+            totalVotes===0
+            ?
+            0
+            :
+            (
+            option.votes/
+            totalVotes*
+            100
+            )
+            .toFixed(1);
+
+
+
+            return(
+
 
               <div
-                style={{
-                  width: "100%",
-                  height: "20px",
-                  background:
-                    "#ddd",
-                }}
+                className="result-card"
+                key={index}
               >
-                <div
-                  style={{
-                    width: `${percentage}%`,
-                    height: "100%",
-                    background:
-                      "green",
-                  }}
-                />
-              </div>
-            </div>
-          );
-        }
-      )}
 
-      <h3>
-        Total Votes: {totalVotes}
-      </h3>
+
+                <div className="result-top">
+
+
+                  <button
+
+                    className="vote-btn"
+
+                    onClick={()=>
+                      vote(index)
+                    }
+
+                  >
+
+                    Vote
+
+                  </button>
+
+
+
+                  <h3>
+                    {option.text}
+                  </h3>
+
+
+                  <span>
+
+                    {percentage}%
+
+                  </span>
+
+
+
+                </div>
+
+
+
+
+                <div className="bar">
+
+
+                  <div
+
+                    className="bar-fill"
+
+                    style={{
+
+                      width:
+                      `${percentage}%`
+
+                    }}
+
+                  />
+
+
+                </div>
+
+
+
+                <p>
+
+                  {
+                    option.votes
+                  }
+
+                  {" "}
+                  votes
+
+                </p>
+
+
+
+
+              </div>
+
+
+            );
+
+          }
+        )
+
+        }
+
+
+
+        <h2>
+
+          Total Votes:
+          {" "}
+          {totalVotes}
+
+        </h2>
+
+
+
+      </div>
+
+
+
     </div>
+
+
   );
+
+
 }
+
+
 
 export default PollPage;
