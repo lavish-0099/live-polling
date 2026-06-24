@@ -263,21 +263,6 @@ Socket rooms are used so updates are only broadcast to users viewing a specific 
 
 ---
 
-## 📸 Screenshots
-
-### Poll Creation
-
-- Create custom polls
-- Generate smart suggestions
-
-### Live Voting
-
-- Vote instantly
-- Real-time updates
-- Interactive charts
-
----
-
 ## 👨‍💻 Author
 
 **Lavish Batra**
